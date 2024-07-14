@@ -1,0 +1,86 @@
+/* src/components/Sidebar.css */
+
+.sidebar {
+    width: 230px;
+    height: 100vh;
+    background-color: #1a1822;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Adjusts the positioning of the user section */
+    font-family: Arial, sans-serif; /* Change font for the entire sidebar */
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    margin-top: 20px; /* Add margin to separate the ul from the logo */
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-weight: 350; /* Adjust as needed */
+}
+
+.sidebar-icon {
+    margin-right: 10px; /* Space between the icon and the text */
+}
+
+/* Logo CSS */
+.logo-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo-text {
+    font-family: 'Judson', serif; /* Keep Judson font for logo */
+    font-weight: bold;
+    font-size: 36px;
+    color: white;
+    text-align: center;
+}
+
+.logo-verse {
+    color: orange;
+}
+
+.logo-text-link {
+    text-decoration: none;
+}
+
+/* User Section CSS */
+.user-section {
+    padding-top: 20px;
+    width: 100%;
+    text-align: center;
+    color: #ffffff;
+    position: relative; /* Ensure relative positioning for absolute children */
+}
+
+.user-section hr {
+    position: absolute;
+    top: 0; /* Position the line at the top of .user-section */
+    left: 0; /* Align to the start of the sidebar */
+    width: 100%; /* Full width of the sidebar */
+    border: 0;
+    border-top: 1px solid #d7cece; /* Light gray color for the line */
+}
+
+.user-section span {
+    display: block;
+    font-weight: bold;
+    margin-top: 10px; /* Space between the line and the name */
+}
