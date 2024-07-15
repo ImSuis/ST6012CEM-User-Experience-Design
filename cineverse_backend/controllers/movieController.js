@@ -130,9 +130,100 @@ const getComingSoonMovies = async (req, res, next) => {
   }
 };
 
+const searchMovies = async (req, res, next) => {
+  try {
+    const { title } = req.query;
+
+    if (!title) {
+      return res.status(400).json({ message: "Title query parameter is required" });
+    }
+
+    const movies = await Movie.findAll({
+      where: {
+        title: {
+          [Op.iLike]: `%${title}%`, // Case-insensitive search for matching titles
+        },
+      },
+    });
+
+    if (movies.length === 0) {
+      return res.status(404).json({ message: "No movies found matching the title" });
+    }
+
+    res.status(200).json({ movies });
+  } catch (error) {
+    console.error("Error searching movies:", error.message);
+    next(error); // Pass the error to the error handling middleware
+  }
+};
+
+const editMovie = async (req, res, next) => {
+  try {
+    const movieId = req.params.id;
+    const {
+      title,
+      description,
+      releaseDate,
+      genre,
+      runtime,
+      director,
+      cast,
+      language,
+      trailerUrl,
+      rating,
+    } = req.body;
+
+    // Find the movie by ID
+    const movie = await Movie.findByPk(movieId);
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" });
+    }
+
+    // Optional: Handle file uploads for poster and landscape images
+    if (req.files) {
+      if (req.files.poster) {
+        const posterResult = await cloudinary.uploader.upload(req.files.poster.path, {
+          folder: "movie_posters",
+          crop: "fill",
+        });
+        movie.posterUrl = posterResult.secure_url;
+      }
+
+      if (req.files.landscapeImage) {
+        const landscapeResult = await cloudinary.uploader.upload(req.files.landscapeImage.path, {
+          folder: "movie_landscape",
+          crop: "fill",
+        });
+        movie.landscapeImageUrl = landscapeResult.secure_url;
+      }
+    }
+
+    // Update movie details
+    movie.title = title || movie.title;
+    movie.description = description || movie.description;
+    movie.releaseDate = releaseDate || movie.releaseDate;
+    movie.genre = genre || movie.genre;
+    movie.runtime = runtime || movie.runtime;
+    movie.director = director || movie.director;
+    movie.cast = cast ? cast.split(",").map(c => c.trim()) : movie.cast;
+    movie.language = language || movie.language;
+    movie.trailerUrl = trailerUrl || movie.trailerUrl;
+    movie.rating = rating || movie.rating;
+
+    await movie.save();
+
+    res.status(200).json({ message: "Movie updated successfully", movie });
+  } catch (error) {
+    console.error("Error updating movie:", error.message);
+    next(error);
+  }
+};
+
 module.exports = {
   addMovie,
   getSingleMovie,
   getNowShowingMovies,
   getComingSoonMovies,
+  searchMovies,
+  editMovie
 };
